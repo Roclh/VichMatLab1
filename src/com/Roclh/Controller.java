@@ -13,7 +13,7 @@ public class Controller {
 
     public void start(){
 //        try {
-//            MatrixFactory.createMatrix("500x501",500, 501);
+//            MatrixFactory.createMatrix("10x11",10, 11);
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
