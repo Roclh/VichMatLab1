@@ -20,8 +20,9 @@ public class MatrixFactory {
                 }
             }
             result+="\r\n";
+            fileWriter.write(result);
+            result="";
         }
-        fileWriter.write(result);
         fileWriter.flush();
     }
 }
