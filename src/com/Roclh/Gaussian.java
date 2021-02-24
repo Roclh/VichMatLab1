@@ -3,9 +3,6 @@ package com.Roclh;
 import com.Roclh.UI.Terminal;
 import com.Roclh.wrapper.Matrix;
 
-import java.io.FileNotFoundException;
-import java.util.Arrays;
-
 public class Gaussian {
     Terminal terminal = new Terminal();
 
@@ -17,13 +14,14 @@ public class Gaussian {
     public void solve(Matrix matrix) {
         terminal.writeMatrix(matrix);
         System.out.println("Получение треугольной матрицы");
-        terminal.writeMatrix(getTriangleMatrix(matrix));
+        Matrix triangleMatrix = getTriangleMatrix(matrix);
+        terminal.writeMatrix(triangleMatrix);
         System.out.println("Рассчет определителя: ");
         System.out.println(determinant(matrix.shorten()));
         System.out.println("Рассчет вектора результатов: ");
-        terminal.printArray(results(getTriangleMatrix(matrix)));
+        terminal.printArray(results(triangleMatrix));
         System.out.println("Рассчет вектора невязок:");
-        terminal.printScientificArray(residualVector(matrix, results(getTriangleMatrix(matrix))));
+        terminal.printScientificArray(residualVector(matrix, results(triangleMatrix)));
     }
 
     //Метод рассчитывает определитель матрицы перемножая значения основной диагонали треугольной матрицы

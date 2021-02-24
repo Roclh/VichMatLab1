@@ -4,7 +4,6 @@ import com.Roclh.UI.Terminal;
 import com.Roclh.wrapper.Matrix;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 
 public class Controller {
     private Matrix matrix;
