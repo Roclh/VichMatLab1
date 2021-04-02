@@ -5,6 +5,7 @@ import com.Roclh.wrapper.Matrix;
 
 import java.io.FileNotFoundException;
 
+//Класс, реализующий управление программой с помощью терминала.
 public class Controller {
     private Matrix matrix;
     private final Terminal terminal = new Terminal();

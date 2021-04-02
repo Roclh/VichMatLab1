@@ -4,6 +4,7 @@ import com.Roclh.UI.Terminal;
 import com.Roclh.wrapper.Matrix;
 
 public class Gaussian {
+    //Класс, отвечающий за ввод и вывод матриц
     Terminal terminal = new Terminal();
 
     public Gaussian() {
@@ -13,15 +14,84 @@ public class Gaussian {
     //Метод объединяет все действия, необходимые для решения
     public void solve(Matrix matrix) {
         terminal.writeMatrix(matrix);
+        if(!checkMainLine(matrix)){
+            if(isCorrectable(matrix)){
+                System.out.println("Исправляю матрицу");
+                Matrix correctMatrix = correctMatrix(matrix);
+                doMath(correctMatrix);
+
+            }else{
+                System.out.println("Так как матрица имеет столбцы или строки полностью состоящие из нулей,\n" +
+                        "определитель матрицы всегда будет равен 0.");
+                System.out.println("Матрицу нельзя привести к треугольному виду");
+            }
+        }else{
+            doMath(matrix);
+        }
+
+
+    }
+
+    private void doMath(Matrix correctMatrix) {
         System.out.println("Получение треугольной матрицы");
-        Matrix triangleMatrix = getTriangleMatrix(matrix);
+        Matrix triangleMatrix = getTriangleMatrix(correctMatrix);
         terminal.writeMatrix(triangleMatrix);
         System.out.println("Рассчет определителя: ");
-        System.out.println(determinant(matrix.shorten()));
+        System.out.println(determinant(correctMatrix.shorten()));
         System.out.println("Рассчет вектора результатов: ");
-        terminal.printArray(results(triangleMatrix));
+        double[] results = results(triangleMatrix);
+        terminal.printArray(results);
         System.out.println("Рассчет вектора невязок:");
-        terminal.printScientificArray(residualVector(matrix, results(triangleMatrix)));
+        terminal.printScientificArray(residualVector(correctMatrix, results));
+    }
+
+    public boolean isCorrectable(Matrix matrix){
+        for(int i=0; i<matrix.height; i++){
+            int counter = 0;
+            for(int j=0; j< matrix.length; j++){
+                if(matrix.getArray()[i][j]==0) counter++;
+            }
+            if(counter >= matrix.length-1)return false;
+        }
+        for(int j=0; j<matrix.length; j++){
+            int counter = 0;
+            for(int i=0; i<matrix.height; i++){
+                if(matrix.getArray()[i][j]==0) counter++;
+            }
+            if(counter >= matrix.height)return false;
+        }
+        return true;
+    }
+
+    public boolean checkMainLine(Matrix matrix){
+        for(int i=0; i<matrix.height; i++){
+            if(matrix.getArray()[i][i]==0d){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public Matrix correctMatrix(Matrix matrix){
+        Matrix copy = new Matrix(matrix);
+        while(!checkMainLine(copy)){
+            System.out.println("На главной диагонале есть нули");
+            for(int i=0; i<copy.height; i++){
+                if(copy.getArray()[i][i]==0){
+                    for(int j=0; j<copy.length; j++){
+                        double buffer = copy.getArray()[i][j];
+                        if(i == copy.height-1){
+                            copy.getArray()[i][j] = copy.getArray()[0][j];
+                            copy.getArray()[0][j] = buffer;
+                        }else{
+                            copy.getArray()[i][j] = copy.getArray()[i+1][j];
+                            copy.getArray()[i+1][j] = buffer;
+                        }
+                    }
+                }
+            }
+        }
+        return copy;
     }
 
     //Метод рассчитывает определитель матрицы перемножая значения основной диагонали треугольной матрицы
@@ -31,8 +101,8 @@ public class Gaussian {
         for (int i = 0; i < temp.height; i++) {
                 determinant *= temp.getArray()[i][i];
         }
-        if(Math.round(determinant)-determinant<0.000001d){
-            return Math.round(determinant);
+        if(Math.ceil(determinant)-determinant<0.000001d){
+            return Math.ceil(determinant);
         }else if(determinant-Math.floor(determinant)<0.000001d){
             return Math.floor(determinant);
         }else return determinant;
